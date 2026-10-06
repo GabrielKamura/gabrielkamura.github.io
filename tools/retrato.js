@@ -1,121 +1,135 @@
 // Draws the pixel portrait (assets/me.png). Run: node tools/retrato.js [preview.png]
 const zlib = require('zlib'), fs = require('fs'), path = require('path');
-const W = 64, H = 72;
+const W = 60, H = 72;
 const px = Array.from({ length: H }, () => Array(W).fill(null));
 
 const P = {
-  skin: '#f0bd94', skin2: '#dea178', skin3: '#c4835c', blush: '#ec9f86',
-  hair: '#2a1f1a', hairHi: '#5a4234', hairLo: '#17110e', fade: '#4a382e',
-  white: '#f6f4ec', eye: '#3b2418', pupil: '#120b08', lid: '#1c1310',
-  frame: '#30323a', glint: '#ffffff',
-  mouth: '#4b1a17', tongue: '#d0604f', lip: '#a9644c',
-  shirt: '#eceee8', shirt2: '#cfd2cb', shirt3: '#aeb2aa', line: '#8f948b',
+  skin: '#f1c7a0', skin2: '#dba57f', skin3: '#bf8462', blush: '#eea48f', glow: '#fbe0c2',
+  hair: '#1c1716', hair2: '#383030', hair3: '#5b4f4e', rim: '#4a403f',
+  white: '#fbfaf5', iris: '#4a2d1d', pupil: '#130c09', lid: '#1a1210',
+  frame: '#4a3a30', lip: '#b8605a', lip2: '#e59c93',
+  shirt: '#f0f1ec', shirt2: '#d0d3cc', shirt3: '#aeb2aa',
+  jean: '#3f608c', jean2: '#2c4568', jean3: '#5c82b3',
+  shoe: '#f0f1ec', sole: '#9fa39b', lace: '#c9ccc5',
 };
+const HAIRS = [P.hair, P.hair2, P.hair3, P.rim];
+const SKINS = [P.skin, P.skin2, P.skin3, P.blush, P.glow];
 
 const inb = (x, y) => x >= 0 && x < W && y >= 0 && y < H;
 const set = (x, y, c) => { if (inb(x, y)) px[y][x] = c; };
 const get = (x, y) => inb(x, y) ? px[y][x] : null;
-function ell(cx, cy, rx, ry, c, test) {
+function ell(cx, cy, rx, ry, c, test, n = 2) {
   for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
-    const dx = (x - cx) / rx, dy = (y - cy) / ry;
-    if (dx * dx + dy * dy <= 1 && (!test || test(x, y))) px[y][x] = typeof c === 'function' ? c(x, y, dx, dy) : c;
+    const d = Math.abs((x - cx) / rx) ** n + Math.abs((y - cy) / ry) ** n;
+    if (d <= 1 && (!test || test(x, y))) px[y][x] = typeof c === 'function' ? c(x, y, d) : c;
   }
 }
-function ring(cx, cy, rx, ry, c, t = 1) {
+function ring(cx, cy, rx, ry, c, t = 1, n = 2) {
   for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
-    const o = ((x - cx) / rx) ** 2 + ((y - cy) / ry) ** 2, i = ((x - cx) / (rx - t)) ** 2 + ((y - cy) / (ry - t)) ** 2;
+    const o = Math.abs((x - cx) / rx) ** n + Math.abs((y - cy) / ry) ** n;
+    const i = Math.abs((x - cx) / (rx - t)) ** n + Math.abs((y - cy) / (ry - t)) ** n;
     if (o <= 1 && i > 1) px[y][x] = c;
   }
 }
 const rect = (x0, y0, x1, y1, c) => { for (let y = y0; y <= y1; y++) for (let x = x0; x <= x1; x++) set(x, y, c); };
 const dots = (c, list) => list.forEach(([x, y]) => set(x, y, c));
 const hline = (x0, x1, y, c) => rect(x0, y, x1, y, c);
-
-/* sweatshirt */
-ell(32, 81, 31, 19, (x, y, dx, dy) => { const d = dx * dx + dy * dy; return d > .9 ? P.shirt3 : d > .72 ? P.shirt2 : P.shirt; });
-dots(P.shirt2, [[13, 69], [14, 70], [15, 71], [50, 69], [49, 70], [48, 71]]);
-
-/* neck */
-/* collar behind, neck, collar in front */
-ring(32, 64, 11, 5, P.shirt3, 2.4);
-rect(27, 52, 37, 64, P.skin2);
-rect(27, 56, 37, 60, P.skin3);
-ell(32, 64, 8, 3.4, P.skin2);
-for (const [c, t] of [[P.shirt2, 2.4], [P.line, .9]]) { const keep = px.map(r => r.slice()); ring(32, 64, 11, 5, c, t); for (let y = 0; y < 64; y++) px[y] = keep[y]; }
-
-/* ears */
-ell(17, 39, 3, 4.5, P.skin); ell(47, 39, 3, 4.5, P.skin2);
-dots(P.skin3, [[16, 38], [16, 39], [17, 40], [48, 38], [48, 39], [47, 40]]);
-
-/* face: skull + jaw */
-const faceColor = (x, y) => (x >= 42 || (x >= 40 && y >= 46)) ? P.skin2 : P.skin;
-ell(32, 35, 14, 15, faceColor);
-ell(32, 41, 12.2, 15.2, faceColor);
-// soft jaw shadow
-for (let y = 44; y < 58; y++) for (let x = 18; x < 47; x++) {
-  if (get(x, y) === P.skin || get(x, y) === P.skin2) {
-    const below = get(x, y + 1), side = get(x + 1, y);
-    if ((below !== P.skin && below !== P.skin2 && y > 52) ) px[y][x] = P.skin3;
-    else if (side !== P.skin && side !== P.skin2 && side !== P.skin3 && x > 32) px[y][x] = P.skin3;
-  }
+function limb(x0, y0, x1, y1, r, c) {
+  const n = Math.ceil(Math.hypot(x1 - x0, y1 - y0) * 2);
+  for (let i = 0; i <= n; i++) ell(x0 + (x1 - x0) * i / n, y0 + (y1 - y0) * i / n, r, r, c);
 }
 
-/* hair */
-const isHairZone = (x, y) => {
-  // forehead stays clear: a rounded hairline, a bit higher on his right (our left)
-  const hl = 25 + Math.round(Math.abs(x - 30) * Math.abs(x - 30) / 55);
-  return y < hl || x < 20 || x > 45;
-};
-ell(32, 21, 16.5, 12, P.hair, (x, y) => isHairZone(x, y) && y < 34);
-[[23, 12, 5, 4], [31, 10, 6, 4], [39, 11, 5, 4], [45, 16, 4, 5], [18, 17, 4, 5], [27, 9, 4, 3], [36, 9, 4, 3]].forEach(([x, y, a, b]) => ell(x, y, a, b, P.hair));
-// faded sides
-for (let y = 27; y <= 34; y++) for (let x = 0; x < W; x++) if (get(x, y) === P.hair && (x <= 19 || x >= 45)) px[y][x] = P.fade;
-// fringe: a few curls dropping on the forehead
-dots(P.hair, [[22, 26], [23, 26], [24, 25], [26, 25], [27, 26], [33, 25], [34, 25], [38, 26], [39, 26], [41, 27], [42, 27], [21, 27], [43, 28]]);
-// curls: highlights and deep shadows
-const hi = [[22, 13, 3], [26, 10, 4], [33, 8, 4], [40, 10, 3], [44, 15, 3], [19, 18, 2], [28, 15, 4], [36, 14, 4], [24, 19, 3], [41, 19, 3], [31, 20, 4], [20, 23, 2], [45, 22, 2], [35, 21, 2]];
-hi.forEach(([x, y, n]) => { for (let i = 0; i < n; i++) if (get(x + i, y - (i >> 1)) === P.hair) set(x + i, y - (i >> 1), P.hairHi); });
-const lo = [[24, 15, 3], [31, 13, 3], [38, 17, 3], [21, 21, 2], [28, 22, 3], [42, 23, 2], [34, 17, 2]];
-lo.forEach(([x, y, n]) => { for (let i = 0; i < n; i++) if (get(x + i, y + (i >> 1)) === P.hair) set(x + i, y + (i >> 1), P.hairLo); });
-// shadow the hair casts on the forehead
-for (let x = 20; x <= 45; x++) for (let y = 24; y < 32; y++) if (get(x, y) === P.skin && [P.hair, P.hairHi, P.hairLo].includes(get(x, y - 1))) { px[y][x] = P.skin2; break; }
+/* ---------- legs and sneakers ---------- */
+rect(22, 58, 38, 61, P.jean);
+rect(22, 62, 28, 67, P.jean); rect(32, 62, 38, 67, P.jean);
+rect(22, 59, 22, 67, P.jean2); rect(38, 59, 38, 67, P.jean2); rect(28, 62, 28, 67, P.jean2); rect(32, 62, 32, 67, P.jean2);
+rect(24, 60, 24, 66, P.jean3); rect(34, 60, 34, 66, P.jean3);
+hline(29, 31, 61, P.jean2); set(30, 60, P.jean2);
+hline(22, 28, 67, P.jean2); hline(32, 38, 67, P.jean2);
+rect(20, 68, 28, 70, P.shoe); rect(32, 68, 40, 70, P.shoe);
+set(20, 68, null); set(40, 68, null);
+hline(20, 28, 71, P.sole); hline(32, 40, 71, P.sole);
+dots(P.lace, [[24, 68], [26, 68], [25, 69], [34, 68], [36, 68], [35, 69]]);
+dots(P.sole, [[28, 70], [32, 70]]);
 
-/* eyebrows */
-[[21, 28], [36, 43]].forEach(([a, b], k) => {
-  hline(a, b, 29, P.hair); hline(a + 1, b - 1, 28, P.hair);
-  set(k ? b : a, 30, P.hair);
+/* ---------- sweatshirt ---------- */
+ell(30, 50, 10.5, 9.5, P.shirt, null, 3.2);
+rect(20, 54, 40, 56, P.shirt);
+rect(20, 57, 40, 58, P.shirt2); hline(20, 40, 59, P.shirt3);
+for (let x = 21; x <= 39; x += 2) set(x, 58, P.shirt3);
+// far arm, hanging
+limb(41.5, 45, 43, 54, 2.1, P.shirt);
+rect(41, 54, 45, 55, P.shirt2);
+rect(41, 56, 44, 58, P.skin); hline(41, 44, 58, P.skin2); set(45, 57, P.skin);
+for (let y = 45; y <= 55; y++) set(40, y, P.shirt2);
+// folds
+dots(P.shirt2, [[23, 47], [23, 48], [24, 49], [36, 52], [37, 53], [37, 54], [25, 55], [26, 56], [30, 51], [30, 52]]);
+// thumbs-up arm
+limb(19.5, 45.5, 14.5, 51, 2.3, P.shirt);
+limb(14.5, 51, 12.5, 48.5, 2.3, P.shirt);
+dots(P.shirt2, [[17, 52], [16, 53], [15, 53], [14, 53], [13, 53], [18, 51], [19, 50], [20, 49], [20, 48], [20, 50]]);
+rect(10, 47, 15, 48, P.shirt2);
+rect(10, 42, 15, 46, P.skin);
+rect(11, 38, 12, 41, P.skin); set(13, 41, P.skin);
+set(10, 42, null); set(15, 42, P.skin2);
+dots(P.skin2, [[13, 43], [14, 43], [15, 43], [13, 45], [14, 45], [15, 45], [15, 44], [15, 46], [10, 46], [11, 46], [12, 46], [13, 46], [14, 46]]);
+dots(P.glow, [[11, 39], [11, 40]]);
+
+/* ---------- neck and collar ---------- */
+rect(27, 39, 33, 43, '#a66f4e');
+ring(30, 43, 5.6, 2.6, P.shirt3, 1.2);
+hline(27, 33, 44, P.shirt2);
+
+/* ---------- head ---------- */
+ell(13.5, 27.5, 2.6, 3.6, P.skin); ell(46.5, 27.5, 2.6, 3.6, P.skin2);
+dots(P.skin3, [[13, 27], [13, 28], [14, 29], [47, 27], [47, 28], [46, 29]]);
+const face = (x, y) => x >= 44 ? P.skin2 : P.skin;
+ell(30, 24, 16, 15, face);
+ell(30, 28, 14.8, 12.6, face);
+// chin and jaw shadow
+for (let y = 30; y <= 41; y++) for (let x = 12; x < 48; x++) {
+  if (!SKINS.includes(get(x, y))) continue;
+  if (!SKINS.includes(get(x, y + 1)) && y >= 39) px[y][x] = P.skin2;
+}
+
+/* ---------- hair: black, straight, rounded fringe ---------- */
+const JAG = [0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0];
+const hairline = x => Math.round(14.2 + (x < 31 ? (x - 31) ** 2 / 34 : (x - 31) ** 2 / 40)) + JAG[x % JAG.length];
+ell(30, 16.5, 18.6, 15, P.hair, (x, y) => y < hairline(x) || ((x <= 14 || x >= 46) && y <= 24));
+// strands
+const strand = (x, y, len, dx, c) => { for (let i = 0; i < len; i++) { const xx = Math.round(x + dx * i), yy = y + i; if (get(xx, yy) === P.hair) set(xx, yy, c); } };
+[[19, 7, 5, -.6], [24, 4, 6, -.5], [30, 3, 6, -.2], [36, 4, 6, .4], [42, 7, 5, .6], [15, 14, 4, -.3], [45, 14, 4, .3], [26, 10, 4, -.4], [34, 9, 4, .2], [21, 12, 3, -.5], [39, 12, 3, .5]]
+  .forEach(([x, y, l, d]) => strand(x, y, l, d, P.hair2));
+[[22, 5, 4, -.6], [27, 3, 4, -.4], [18, 10, 3, -.6]].forEach(([x, y, l, d]) => strand(x, y, l, d, P.hair3));
+// rim light so the black hair reads on a dark card
+for (let y = 0; y < 26; y++) for (let x = 0; x < W; x++) if (HAIRS.includes(get(x, y)) && get(x, y - 1) === null && x < 40) px[y][x] = P.rim;
+// shadow under the fringe
+for (let x = 14; x <= 46; x++) for (let y = 12; y < 26; y++) if (get(x, y) === P.skin && HAIRS.includes(get(x, y - 1))) { px[y][x] = P.skin2; break; }
+
+/* ---------- face ---------- */
+[[19, 26], [34, 41]].forEach(([a, b], k) => {
+  hline(a, b, 19, P.hair); hline(a + 1, b - 1, 18, P.hair);
 });
-
-/* eyes */
-[25, 39].forEach(cx => {
-  ell(cx, 37.5, 3.6, 3, P.white);
-  hline(cx - 3, cx + 3, 35, P.lid); set(cx - 4, 36, P.lid); set(cx + 4, 36, P.lid);
-  rect(cx - 1, 36, cx + 1, 39, P.eye);
-  rect(cx, 37, cx + 1, 39, P.pupil);
-  set(cx - 1, 36, P.glint);
-  hline(cx - 2, cx + 2, 41, P.skin2);
+[23, 37].forEach(cx => {
+  ell(cx, 26, 3.3, 2.9, P.white);
+  hline(cx - 3, cx + 3, 23, P.lid); set(cx - 4, 24, P.lid); set(cx + 4, 24, P.lid);
+  rect(cx - 1, 24, cx + 1, 28, P.iris);
+  rect(cx, 25, cx + 1, 27, P.pupil); set(cx - 1, 26, P.pupil);
+  set(cx - 1, 24, P.white); set(cx + 1, 28, '#7a5236');
 });
-
-/* glasses: thin round frames */
-ring(25, 37.5, 6.4, 6.4, P.frame, .95);
-ring(39, 37.5, 6.4, 6.4, P.frame, .95);
-hline(31, 33, 36, P.frame);
-dots(P.frame, [[18, 36], [17, 36], [46, 36], [47, 36]]);
-dots('#7d828c', [[21, 34], [22, 33], [35, 34], [36, 33]]);
-
-/* nose */
-dots(P.skin2, [[33, 40], [33, 41], [33, 42]]);
-dots(P.skin3, [[31, 44], [32, 44], [33, 44], [34, 43]]);
-
-/* cheeks */
-dots(P.blush, [[20, 45], [21, 45], [22, 45], [21, 46], [42, 45], [43, 45], [44, 45], [43, 46]]);
-
-/* smile */
-ell(32, 47, 6.8, 5, P.mouth, (x, y) => y >= 47);
-hline(27, 37, 47, P.white); hline(27, 37, 48, P.white);
-ell(32, 52, 3.6, 2, P.tongue, (x, y) => get(x, y) === P.mouth);
-dots(P.mouth, [[25, 46], [39, 46], [24, 45], [40, 45]]);
-dots(P.skin2, [[30, 54], [31, 54], [32, 54], [33, 54], [34, 54]]);
+// glasses: big, thin, rounded-square
+ring(22.5, 26, 6.9, 6.2, P.frame, 1, 3);
+ring(37.5, 26, 6.9, 6.2, P.frame, 1, 3);
+dots(P.frame, [[29, 24], [30, 23], [31, 24], [15, 24], [14, 24], [45, 24], [46, 24]]);
+dots(P.glow, [[18, 23], [19, 22], [33, 23], [34, 22]]);
+// nose
+dots(P.skin2, [[31, 29], [31, 30]]);
+dots(P.skin3, [[29, 32], [30, 32], [31, 32]]);
+// cheeks
+dots(P.blush, [[17, 33], [18, 33], [19, 33], [18, 34], [41, 33], [42, 33], [43, 33], [42, 34]]);
+// mouth: closed, easy smile
+hline(26, 34, 35, P.lip); dots(P.lip, [[25, 34], [35, 34]]);
+hline(28, 32, 36, P.lip2);
 
 /* ---------- png ---------- */
 const hex = c => [parseInt(c.slice(1, 3), 16), parseInt(c.slice(3, 5), 16), parseInt(c.slice(5, 7), 16)];
