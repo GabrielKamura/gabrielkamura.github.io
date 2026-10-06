@@ -92,29 +92,18 @@ for (let y = 30; y <= 41; y++) for (let x = 12; x < 48; x++) {
   if (!SKINS.includes(get(x, y + 1)) && y >= 39) px[y][x] = P.skin2;
 }
 
-/* ---------- hair: black, volume on top swept to one side, short faded sides ---------- */
-const HL = [[13, 20], [17, 18], [21, 16], [25, 15], [29, 14], [33, 12.5], [38, 12], [42, 13], [45, 16], [47, 20]];
-const TIP = { 18: 1, 19: 1, 22: 2, 23: 1, 26: 2, 27: 1, 30: 1, 31: 2, 35: 1, 39: 1 };
-const hairline = x => {
-  let k = HL.findIndex(p => p[0] >= x); if (k < 0) k = HL.length - 1; if (k === 0) k = 1;
-  const [x0, y0] = HL[k - 1], [x1, y1] = HL[k];
-  return Math.round(y0 + (y1 - y0) * (x - x0) / (x1 - x0)) + (TIP[x] || 0);
-};
-// faded sides hug the head instead of covering the ears
-ell(30, 24, 16.6, 15.4, '#3b3232', (x, y) => (x <= 16 || x >= 44) && y >= 12 && y <= 23);
-dots('#3b3232', [[15, 24], [45, 24]]);
-// top mass, taller than the skull, with an uneven outline
-const top = (x, y) => y < hairline(x);
-ell(30, 11.5, 16.4, 10.5, P.hair, top);
-[[19, 6.5, 4, 3.2], [25, 4, 5, 3.2], [32, 3.2, 5.5, 3], [39, 5, 4.5, 3.2], [44, 9, 3, 3.6], [15.5, 10.5, 3, 4]].forEach(([x, y, a, b]) => ell(x, y, a, b, P.hair, top));
-dots(P.hair, [[22, 1], [23, 1], [28, 0], [29, 0], [35, 1], [41, 3], [17, 5], [46, 7]]);
-// strands sweeping from the part (right of centre) down to the left
+/* ---------- hair: same cut as the reference doll: round black cap, side locks, parted fringe ---------- */
+// lowest hair row per column: side locks, left chunk, forehead window, hanging strand, tuft, right chunk
+const FRINGE = [[11, 25], [14, 21], [17, 18], [20, 14], [23, 17], [26, 20], [29, 21], [31, 12], [34, 15], [36, 12], [44, 16], [47, 25], [50, 0]];
+const hairline = x => { let v = 0; for (const [x0, y] of FRINGE) if (x >= x0) v = y; return v; };
+for (let y = 0; y <= 25; y++) for (let x = 11; x <= 49; x++) {
+  const inCap = y >= 14 || ((x - 30) / 19.5) ** 2 + ((y - 14) / 13.5) ** 2 <= 1;
+  if (inCap && y <= hairline(x)) px[y][x] = P.hair;
+}
 const strand = (x, y, len, dx, c) => { for (let i = 0; i < len; i++) { const xx = Math.round(x + dx * i), yy = y + i; if (get(xx, yy) === P.hair) set(xx, yy, c); } };
-[[37, 3, 9, -.9], [31, 2, 10, -1], [25, 3, 9, -.9], [19, 6, 7, -.6], [42, 5, 6, .5], [45, 10, 4, .4]]
-  .forEach(([x, y, l, d]) => strand(x, y, l, d, P.hair2));
-[[34, 3, 4, -1], [28, 4, 4, -1]].forEach(([x, y, l, d]) => strand(x, y, l, d, P.hair3));
-// rim light so the black hair reads on a dark card
-for (let y = 0; y < 26; y++) for (let x = 0; x < W; x++) if (HAIRS.includes(get(x, y)) && get(x, y - 1) === null && x < 40) px[y][x] = P.rim;
+[[22, 4, 8, -.6], [30, 3, 7, -.3], [38, 4, 7, .5], [27, 12, 6, .3]].forEach(([x, y, l, d]) => strand(x, y, l, d, P.hair2));
+// thin light edge so the black hair reads on a dark card
+for (let y = 0; y < 27; y++) for (let x = 0; x < W; x++) if (get(x, y) === P.hair && (get(x, y - 1) === null || get(x - 1, y) === null || get(x + 1, y) === null)) px[y][x] = P.rim;
 // shadow under the fringe
 for (let x = 14; x <= 46; x++) for (let y = 12; y < 26; y++) if (get(x, y) === P.skin && HAIRS.includes(get(x, y - 1))) { px[y][x] = P.skin2; break; }
 
