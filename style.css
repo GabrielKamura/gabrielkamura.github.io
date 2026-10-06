@@ -87,7 +87,7 @@ button{cursor:pointer;font:inherit}
 .link:hover span{transform:translate(2px,-2px)}
 
 .player{color:var(--ink-3);box-shadow:4px 4px 0 var(--shadow);background:var(--card);display:grid;grid-template-columns:minmax(0,360px) minmax(0,1fr)}
-.portrait{box-shadow:inset -2px 0 0 var(--shadow);background:var(--card) radial-gradient(#2a2d26 1px,#0000 1.5px) 0 0/16px 16px;display:grid;place-items:end center;padding:40px 40px 0;overflow:hidden}
+.portrait{box-shadow:inset -2px 0 0 var(--shadow);background:var(--card) radial-gradient(#2a2d26 1px,#0000 1.5px) 0 0/16px 16px;display:grid;place-items:end center;padding:40px 0 0;overflow:hidden}
 .portrait img{width:100%;height:auto;image-rendering:pixelated;display:block}
 .stats{display:flex;flex-direction:column;gap:20px;padding:28px 32px}
 .top{color:var(--muted);display:flex;align-items:center;gap:16px}
