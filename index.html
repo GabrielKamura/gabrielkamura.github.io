@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Gabriel Kamura</title>
+<meta name="description" content="I make Mac apps, extensions and games. Maker of Kamurafy, Kamurar and Kamurafox. Building Money Sniper.">
+<link rel="canonical" href="https://gabrielkamura.github.io/">
+<meta property="og:title" content="Gabriel Kamura">
+<meta property="og:description" content="Mac apps, extensions and games. A portfolio with a sleepy fox and a few secrets.">
+<meta property="og:url" content="https://gabrielkamura.github.io/">
+<meta property="og:type" content="website">
+<meta name="theme-color" content="#0c0d0b">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8' shape-rendering='crispEdges'%3E%3Crect width='8' height='8' fill='%230c0d0b'/%3E%3Cpath fill='%23d97757' d='M1 1h1v1H1zM6 1h1v1H6zM1 2h6v3H1zM2 5h4v1H2zM3 6h2v1H3z'/%3E%3Cpath fill='%230c0d0b' d='M2 3h1v1H2zM5 3h1v1H5z'/%3E%3C/svg%3E">
+<link rel="preload" href="fonts/silkscreen-1.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<section class="hero" id="top" data-phase="build">
+  <header class="nav">
+    <a class="navName" href="#top">Gabriel Kamura</a>
+    <nav class="navLinks" aria-label="Sections">
+      <a href="#projects">Projects</a>
+      <a href="#about">About</a>
+      <a href="#graph">Year</a>
+      <a href="#contact">Contact</a>
+      <a class="navGithub" href="https://github.com/GabrielKamura" target="_blank" rel="noopener">GitHub <span aria-hidden="true">↗</span></a>
+    </nav>
+    <button class="menuButton" id="menuButton" aria-expanded="false" aria-controls="mobile-menu" aria-label="Menu">
+      <span class="iconMenu" aria-hidden="true">≡</span><span class="iconClose" aria-hidden="true">×</span>
+    </button>
+  </header>
+
+  <nav class="menu" id="mobile-menu" aria-label="Menu">
+    <div class="menuLinks">
+      <a class="menuLink" href="#projects">Projects</a>
+      <a class="menuLink" href="#about">About</a>
+      <a class="menuLink" href="#graph">Year</a>
+      <a class="menuLink" href="#contact">Contact</a>
+    </div>
+    <div class="menuSocials">
+      <a href="https://github.com/GabrielKamura" target="_blank" rel="noopener">GitHub</a>
+      <a href="https://x.com/infligem" target="_blank" rel="noopener">X</a>
+      <a href="https://www.linkedin.com/in/gabrielkamura" target="_blank" rel="noopener">LinkedIn</a>
+      <a href="https://www.instagram.com/gabriel_kamura" target="_blank" rel="noopener">Instagram</a>
+    </div>
+  </nav>
+
+  <div class="content">
+    <h1 class="title" id="title" data-build aria-label="Gabriel Kamura">Gabriel Kamura</h1>
+    <p class="line" data-build>
+      I make Mac apps, extensions and games.<br>
+      Maker of <a class="hl hlBuild" href="https://gabrielkamura.github.io/kamurafy/" target="_blank" rel="noopener">Kamurafy</a>.
+      Building <a class="hl hlAgent" href="https://moneysniper.io" target="_blank" rel="noopener">Money Sniper</a>.
+    </p>
+    <a class="cta" href="#projects" data-build>See projects <span aria-hidden="true">↓</span></a>
+    <div class="socials" data-build>
+      <a href="https://x.com/infligem" target="_blank" rel="noopener">X<span class="arrow" aria-hidden="true">↗</span></a>
+      <a href="https://www.linkedin.com/in/gabrielkamura" target="_blank" rel="noopener">LinkedIn<span class="arrow" aria-hidden="true">↗</span></a>
+      <a href="https://www.instagram.com/gabriel_kamura" target="_blank" rel="noopener">Instagram<span class="arrow" aria-hidden="true">↗</span></a>
+      <a href="https://github.com/GabrielKamura" target="_blank" rel="noopener">GitHub<span class="arrow" aria-hidden="true">↗</span></a>
+    </div>
+    <div class="ground" id="ground">
+      <div class="segs" id="segs" aria-hidden="true"></div>
+      <button class="fox" id="fox" aria-label="A small fox, asleep">
+        <span class="bubble" id="bubble" hidden>ZZZ</span>
+        <canvas id="foxCanvas" width="48" height="32"></canvas>
+      </button>
+    </div>
+  </div>
+</section>
+
+<main>
+<section class="block" id="projects">
+  <h2 class="heading">Projects</h2>
+  <div class="grid">
+    <article class="card">
+      <div class="media"><img src="assets/kamurafy.jpg" alt="Kamurafy dashboard showing processor, battery and memory" loading="lazy" style="object-position:top"></div>
+      <h3 class="name">Kamurafy</h3>
+      <p class="desc">Takes care of your Mac and, above all, its battery.</p>
+      <p class="stat">Free · open source · no account</p>
+      <a class="link" href="https://gabrielkamura.github.io/kamurafy/" target="_blank" rel="noopener">gabrielkamura.github.io/kamurafy <span aria-hidden="true">↗</span></a>
+    </article>
+    <article class="card">
+      <div class="media"><img src="assets/moneysniper.jpg" alt="Money Sniper, the rhythm game about money" loading="lazy"></div>
+      <h3 class="name">Money Sniper</h3>
+      <p class="desc">A rhythm game you play in the browser. Hit the bills on the beat.</p>
+      <p class="stat">Nothing to install</p>
+      <a class="link" href="https://moneysniper.io" target="_blank" rel="noopener">moneysniper.io <span aria-hidden="true">↗</span></a>
+    </article>
+    <article class="card">
+      <div class="media"><img src="assets/kamurafox.jpg" alt="Firefox tab being driven by Kamurafox" loading="lazy" style="object-position:top"></div>
+      <h3 class="name">Kamurafox</h3>
+      <p class="desc">Lets Claude Code drive Firefox: open, click, type and read pages.</p>
+      <p class="stat">Extension signed by Mozilla</p>
+      <a class="link" href="https://github.com/GabrielKamura/kamurafox" target="_blank" rel="noopener">github.com/GabrielKamura/kamurafox <span aria-hidden="true">↗</span></a>
+    </article>
+    <article class="card">
+      <div class="media"><img src="assets/kamurar.jpg" alt="Kamurar window: drag files here" loading="lazy"></div>
+      <h3 class="name">Kamurar</h3>
+      <p class="desc">Opens .rar, .zip and .7z on the Mac and makes password-protected archives.</p>
+      <p class="stat">Native · work in progress</p>
+      <a class="link" href="https://github.com/GabrielKamura/kamurar" target="_blank" rel="noopener">github.com/GabrielKamura/kamurar <span aria-hidden="true">↗</span></a>
+    </article>
+  </div>
+</section>
+
+<section class="block" id="about">
+  <h2 class="heading">About me</h2>
+  <div class="player">
+    <div class="portrait"><img src="assets/me.png" alt="Pixel portrait of Gabriel Kamura" width="56" height="56"></div>
+    <div class="stats">
+      <div class="top">
+        <span>Player 1</span>
+        <span class="flags" aria-label="Brazil">
+          <svg width="28" height="20" viewBox="0 0 14 10" shape-rendering="crispEdges" aria-hidden="true"><rect width="14" height="10" fill="#2f9e44"/><path fill="#ffd23f" d="M6 1h2v1h2v1h2v1h1v2h-1v1h-2v1H8v1H6V8H4V7H2V6H1V4h1V3h2V2h2z"/><path fill="#2b4fb5" d="M6 3h2v1h1v2H8v1H6V6H5V4h1z"/></svg>
+        </span>
+        <span class="level">Lvl 4</span>
+      </div>
+      <div class="titleBox">
+        <p class="pname">Gabriel Kamura</p>
+        <p class="pclass">Class: Maker · São Paulo, Brazil</p>
+      </div>
+      <div class="pblock">
+        <p class="label">Inventory</p>
+        <ul class="items">
+          <li><span>Kamurafy</span><span class="stat">Mac app</span></li>
+          <li><span>Money Sniper</span><span class="stat">Rhythm game</span></li>
+          <li><span>Kamurafox</span><span class="stat">Firefox ext</span></li>
+          <li><span>Kamurar</span><span class="stat">Mac app</span></li>
+          <li><span>GitHub</span><span class="stat">Since 2022</span></li>
+          <li><span>This site</span><span class="stat">0 lines by hand</span></li>
+        </ul>
+      </div>
+      <div class="pblock">
+        <p class="label">Special move</p>
+        <p class="move">I build the tool I wish I had, then give it away.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="block" id="graph">
+  <h2 class="heading tight">A year in blocks</h2>
+  <p class="intro">Every day I committed is a block. The greener, the more I shipped.</p>
+  <div class="graph">
+    <canvas class="gcanvas" id="mine" role="img" aria-label="Contribution graph of GabrielKamura"></canvas>
+    <p class="caption"><span><a href="https://github.com/GabrielKamura" target="_blank" rel="noopener">@GabrielKamura</a> <span class="total" id="mineTotal"></span></span><span class="day" id="mineDay"></span></p>
+  </div>
+  <form class="form" id="compare">
+    <label class="flabel" for="handle">Put your year next to mine</label>
+    <div class="row">
+      <span class="at" aria-hidden="true">@</span>
+      <input class="input" id="handle" name="handle" placeholder="github handle" autocomplete="off" autocapitalize="off" spellcheck="false" maxlength="39">
+      <button class="button" type="submit">Compare</button>
+    </div>
+    <p class="status" id="status" role="status"></p>
+  </form>
+  <div class="theirs" id="theirs" hidden>
+    <canvas class="gcanvas" id="yours" role="img"></canvas>
+    <p class="caption"><span><a id="yoursLink" target="_blank" rel="noopener"></a> <span class="total" id="yoursTotal"></span></span><span class="day" id="yoursDay"></span></p>
+    <p class="verdict" id="verdict"></p>
+    <table class="score">
+      <thead><tr><th></th><th>Me</th><th id="yoursHead">You</th></tr></thead>
+      <tbody id="scoreBody"></tbody>
+    </table>
+  </div>
+</section>
+
+<section class="block last" id="contact">
+  <h2 class="heading">Contact</h2>
+  <div class="cols">
+    <div class="links">
+      <a class="social" href="https://x.com/infligem" target="_blank" rel="noopener"><span class="sname">X</span><span class="handle">@infligem</span><span class="sarrow" aria-hidden="true">↗</span></a>
+      <a class="social" href="https://www.linkedin.com/in/gabrielkamura" target="_blank" rel="noopener"><span class="sname">LinkedIn</span><span class="handle">@gabrielkamura</span><span class="sarrow" aria-hidden="true">↗</span></a>
+      <a class="social" href="https://www.instagram.com/gabriel_kamura" target="_blank" rel="noopener"><span class="sname">Instagram</span><span class="handle">@gabriel_kamura</span><span class="sarrow" aria-hidden="true">↗</span></a>
+      <a class="social" href="https://github.com/GabrielKamura" target="_blank" rel="noopener"><span class="sname">GitHub</span><span class="handle">@GabrielKamura</span><span class="sarrow" aria-hidden="true">↗</span></a>
+    </div>
+    <div class="terminal" id="term">
+      <div class="bar"><span class="dots" aria-hidden="true"><span></span><span></span><span></span></span><span class="ttitle">guest@gabrielkamura</span></div>
+      <div class="screen" id="screen">
+        <div role="log" id="tlog" aria-live="polite"></div>
+        <label class="prompt" id="prompt">
+          <span class="ps1"><span class="user">guest</span>~ $</span>
+          <span class="typedWrap"><span class="typed" id="typed"></span><span class="caret" aria-hidden="true"></span><span class="placeholder" id="ph">type a command</span></span>
+          <input class="tInput" id="tin" aria-label="Terminal command" autocomplete="off" autocapitalize="off" spellcheck="false">
+        </label>
+      </div>
+      <div class="chips">
+        <button class="chip" data-primary data-cmd="note">Write a note</button>
+        <button class="chip" data-cmd="follow">Follow</button>
+        <button class="chip" data-cmd="help">Help</button>
+      </div>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer class="footer">
+  <p class="sign">Built pixel by pixel. © 2026 Gabriel Kamura</p>
+  <button class="toggle" id="secretsToggle" aria-haspopup="dialog">Secrets <span class="count" id="secretsCount">0/8</span></button>
+</footer>
+
+<p class="banner" id="banner" role="status"></p>
+<div class="backdrop" id="backdrop" hidden></div>
+<div class="panel" id="panel" role="dialog" aria-modal="true" aria-label="Secrets" hidden>
+  <div class="head"><span>Secrets <span class="count" id="panelCount"></span></span><button class="close" id="panelClose" aria-label="Close">×</button></div>
+  <div class="list" id="secretsList"></div>
+</div>
+<canvas class="parade" id="parade" hidden aria-hidden="true"></canvas>
+
+<script src="app.js" defer></script>
+</body>
+</html>
